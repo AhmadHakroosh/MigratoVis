@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name=viewport content="width=device-width, initial-scale=1.0">
 	<title>MigratoVis - Global Migration Visualization 1990-2010</title>
+	<!-- Stylesheets -->
+	<link href="dist/style.css" rel="stylesheet" media="all">
+	<!-- Scripts -->
+	<script src="dist/index.js"></script>
+	<!--[if lt IE 9]>
+		<script src=lib/html5shiv-printshiv.js></script>
+	<![endif]-->
 </head>
 <body>
-	
+	<div id=container class="container">
+		<div class="wrap">
+			<main role="main">
+				<nav role=navigation>
+					<div id="periods"></div>
+				</nav>
+				<div id="chart"></div>
+			</main>
+		</div>
+	</div>
 </body>
 </html>
