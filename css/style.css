@@ -1,0 +1,25 @@
+/* ----------------------------------------------------- **
+   Global styling
+** ----------------------------------------------------- */
+@font-face {
+    font-family: "CartoGothic";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/CartoGothicStd-Book-webfont.eot") format("embedded-opentype"), url("fonts/CartoGothicStd-Book-webfont.woff") format("woff"), url("fonts/CartoGothicStd-Book-webfont.ttf") format("truetype"), url("fonts/CartoGothicStd-Book-webfont.svg") format("svg");
+}
+
+@font-face {
+    font-family: "CartoGothic";
+    font-style: normal;
+    font-weight: bold;
+    src: url("fonts/CartoGothicStd-Bold-webfont.eot") format("embedded-opentype"), url("fonts/CartoGothicStd-Bold-webfont.woff") format("woff"), url("fonts/CartoGothicStd-Bold-webfont.ttf") format("truetype"), url("fonts/CartoGothicStd-Bold-webfont.svg") format("svg");
+}
+
+body {
+  font: 15px/1.8em 'CartoGothic', Arial, sans-serif;
+  width: 100%;
+  margin: 0;
+  background-color: #6D6B6B;
+  color: #000000;
+  line-height: 1.7em
+}
