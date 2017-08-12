@@ -1,7 +1,20 @@
 {
 	// ECMAScript 6 valid code
 	"esversion": 6,
-	// Other rules
+
+	// Unused and undefined strictness
 	"undef": true,
-	"unused": true
+	"unused": true,
+
+	// Require camelCase typing
+	"camelcase": true,
+
+	// Deep euality
+	"eqeqeq": true,
+
+	// Maximum error numbers before stop building
+	"maxerr": 10,
+
+	// Forbid var usage
+	"varstmt": true
 }
