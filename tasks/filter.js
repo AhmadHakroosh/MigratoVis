@@ -73,4 +73,47 @@ module.exports = (grunt) => {
 				done(error);
 			});
 	}
+
+	grunt.registerMultiTask('filter', 'Filter csv data', () => {
+		let options = this.options({
+			countries: grunt.option('countries'),
+			sample: grunt.option('sample')
+		});
+
+		// when sample option is set, only use countries starting with `A`
+		if (options.sample === true) {
+			options.sample = 'A';
+		}
+
+		if (options.sample) {
+			options.sample = new RegExp('^' + options.sample);
+		}
+
+		let done = this.async();
+		let files = this.files;
+
+		grunt.log.write('Reading countries ' + options.countries + '...');
+		countries(options.countries, (err, codes) => {
+			if (err) {
+				grunt.log.error(err);
+			} else {
+				grunt.log.ok();
+
+				files.forEach((file) => {
+					file.src.forEach((src) => {
+						grunt.log.write('Filtering ' + src + '...');
+
+						filter(src, file.dest, codes, options, (error) => {
+							if (error) {
+								grunt.log.error(error);
+							} else {
+								grunt.log.ok();
+							}
+							done(!error);
+						});
+					});
+				});
+			}
+		});
+	});
 };
