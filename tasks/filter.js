@@ -27,4 +27,50 @@ module.exports = (grunt) => {
 				done(error);
 			});
 	}
+
+	function filter (source, dest, codes, options, done) {
+		let headers = [];
+
+		// Creates an object based on row data
+		function obj (row) {
+			return row.reduce(function(data, col, i) {
+				data[headers[i]] = col;
+				return data;
+			}, {});
+		}
+
+		csv()
+			.from.stream(fs.createReadStream(source))
+			.to.stream(fs.createWriteStream(dest))
+			.transform((row, index) => {
+				if (index === 0) {
+					return headers = row;
+				}
+				// Create object from row
+				let object = obj(row);
+
+				if (options.sample) {
+					if (!object.origin_name.match(options.sample) || !object.destination_name.match(options.sample)) {
+						return null;
+					}
+				}
+				// If origin country is not enabled
+				if (codes.indexOf(object.origin_iso) === -1) {
+					return null;
+				}
+				// If destination country is not enabled
+				if (codes.indexOf(object.destination_iso) === -1) {
+					return null;
+				}
+				// Return row data
+				return row;
+			})
+			.on('end', () => {
+				done(null);
+			})
+			.on('error', (error) => {
+				console.error(error.message);
+				done(error);
+			});
+	}
 };

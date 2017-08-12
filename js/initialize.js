@@ -1,7 +1,4 @@
 (() => {
-	// Global variables
-	let π = Math.PI;
-	let µ = π / 100000;
 	// Filtered data file
 	let datafile = 'data/data.json';
 
