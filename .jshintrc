@@ -1,3 +1,11 @@
 {
-	"esversion": 6
+	// ECMAScript 6 valid code
+	"esversion": 6,
+	// Global constants
+	"globals": {
+		"π": "Math.PI",
+		"µ": "π / 100000"
+	},
+	"endef": true,
+	"unused": true
 }

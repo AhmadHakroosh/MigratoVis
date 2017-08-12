@@ -98,5 +98,5 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
 	grunt.registerTask('build', ['concat', 'cssmin', 'uglify', 'copy']);
-	grunt.registerTask('default', ['jshint', 'nodeunit', 'filter', 'compile', 'build']);
+	grunt.registerTask('default', ['jshint', 'filter', 'compile', 'build']);
 };
