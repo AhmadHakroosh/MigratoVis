@@ -383,7 +383,7 @@
 					if (!c.target.startAngle || chord.target.startAngle < c.target.startAngle) {
 						c.target.startAngle = chord.target.startAngle;
 					}
-					
+
 					if (!c.target.endAngle || chord.target.endAngle > c.target.endAngle) {
 						c.target.endAngle = chord.target.endAngle;
 					}
@@ -402,4 +402,4 @@
 
 		return c;
 	}
-});
+})(window.migrato || (window.migrato = {}));
