@@ -99,7 +99,7 @@
 			return 0.21 * rgb.r + 0.71 * rgb.g + 0.07 * rgb.b;
 		}
     }
-    
+
 	// arc path generator
 	let textPathArc = d3.svg.arc()
 		.innerRadius(config.outerRadius + 10)
@@ -294,5 +294,112 @@
 				height: tbbox.height + 10
 			});
 		}, config.infoPopupDelay);
+	}
+
+	function rememberTheGroups () {
+		previous.groups = layout.groups().reduce((sum, d) => {
+			sum[d.id] = d;
+			return sum;
+		}, {});
+	}
+
+	function rememberTheChords () {
+		previous.chords = layout.chords().reduce((sum, d) => {
+			sum[d.source.id] = sum[d.source.id] || {};
+			sum[d.source.id][d.target.id] = d;
+			return sum;
+		}, {});
+	}
+
+	function getCountryRange (id) {
+		let end = data.regions[data.regions.indexOf(id) + 1];
+
+		return {
+			start: id + 1,
+			end: end ? end - 1 : data.names.length - 1
+		};
+	}
+
+	function inRange (id, range) {
+		return id >= range.start && id <= range.end;
+	}
+
+	function inAnyRange (d, ranges) {
+		return !!ranges.filter((range) => {
+			return inRange(d.source.id, range) || inRange(d.target.id, range);
+		}).length;
+	}
+
+	// Transition countries to region:
+	// Use first country's start angle and last countries end angle. 
+	function meltPreviousGroupArc (d) {
+		if (d.id !== d.region) {
+			return;
+		}
+
+		let range = getCountryRange(d.id);
+		let start = previous.groups[range.start];
+		let end = previous.groups[range.end];
+
+		if (!start || !end) {
+			return;
+		}
+
+		return {
+			angle: start.startAngle + (end.endAngle - start.startAngle) / 2,
+			startAngle: start.startAngle,
+			endAngle: end.endAngle
+		};
+	}
+
+	// Used to set the startpoint for
+	// countries -> region
+	// transition, that is closing a region.
+	function meltPreviousChord (d) {
+		if (d.source.id !== d.source.region) {
+			return;
+		}
+
+		let c = {
+			source: {},
+			target: {}
+		};
+
+		Object.keys(previous.chords).forEach((sourceId) => {
+			Object.keys(previous.chords[sourceId]).forEach((targetId) => {
+				let chord = previous.chords[sourceId][targetId];
+
+				if (chord.source.region === d.source.id) {
+					if (!c.source.startAngle || chord.source.startAngle < c.source.startAngle) {
+						c.source.startAngle = chord.source.startAngle;
+					}
+
+					if (!c.source.endAngle || chord.source.endAngle > c.source.endAngle) {
+						c.source.endAngle = chord.source.endAngle;
+					}
+				}
+
+				if (chord.target.region === d.target.id) {
+					if (!c.target.startAngle || chord.target.startAngle < c.target.startAngle) {
+						c.target.startAngle = chord.target.startAngle;
+					}
+					
+					if (!c.target.endAngle || chord.target.endAngle > c.target.endAngle) {
+						c.target.endAngle = chord.target.endAngle;
+					}
+				}
+			});
+		});
+
+		c.source.startAngle = c.source.startAngle || 0;
+		c.source.endAngle = c.source.endAngle || µ;
+		c.target.startAngle = c.target.startAngle || 0;
+		c.target.endAngle = c.target.endAngle || µ;
+
+		// transition from start
+		c.source.endAngle = c.source.startAngle + µ;
+		c.target.endAngle = c.target.startAngle + µ;
+
+		return c;
 	}
 });
