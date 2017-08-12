@@ -42,7 +42,7 @@ module.exports = function (grunt) {
 					'lib/d3.min.js',
 					'js/chart.js'
 				],
-				dest: 'dist/index.js'
+				dest: 'dest/index.js'
 			},
 			css: {
 				options: {
@@ -52,22 +52,22 @@ module.exports = function (grunt) {
 					'css/normalize.css',
 					'css/style.css'
 				],
-				dest: 'dist/style.css'
+				dest: 'dest/style.css'
 			}
 		},
 
 		uglify: {
 			js: {
 				files: {
-					'dist/index.min.js': ['dist/index.js']
+					'dest/index.min.js': ['dest/index.js']
 				}
 			}
 		},
 
 		cssmin: {
 			css: {
-				src: 'dist/style.css',
-				dest: 'dist/style.min.css'
+				src: 'dest/style.css',
+				dest: 'dest/style.min.css'
 			}
 		},
 
@@ -78,14 +78,14 @@ module.exports = function (grunt) {
 						expand: true,
 						cwd: 'css/fonts/',
 						src: ['*'],
-						dest: 'dist/fonts',
+						dest: 'dest/fonts',
 						flatten: true
 					}
 				]
 			}
 		},
 
-		clean: ['dist']
+		clean: ['dest']
 	});
 
 	grunt.loadTasks('tasks');
