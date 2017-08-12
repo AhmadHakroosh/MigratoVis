@@ -44,7 +44,7 @@ module.exports = (grunt) => {
 			.to.stream(fs.createWriteStream(dest))
 			.transform((row, index) => {
 				if (index === 0) {
-					return headers = row;
+					return (() => {headers = row; return headers;});
 				}
 				// Create object from row
 				let object = obj(row);
@@ -93,9 +93,9 @@ module.exports = (grunt) => {
 		let files = this.files;
 
 		grunt.log.write('Reading countries ' + options.countries + '...');
-		countries(options.countries, (err, codes) => {
-			if (err) {
-				grunt.log.error(err);
+		countries(options.countries, (error, codes) => {
+			if (error) {
+				grunt.log.error(error);
 			} else {
 				grunt.log.ok();
 

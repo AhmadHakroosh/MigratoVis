@@ -21,7 +21,7 @@ module.exports = (grunt) => {
 		};
 
 		let years = Object.keys(data.years);
-		let header = [];
+		let headers = [];
 
 		// Define sort order
 		let sortedRegions = ['North America', 'Africa', 'Europe', 'Fmr Soviet Union', 'West Asia', 'South Asia', 'East Asia', 'South-East Asia', 'Oceania', 'Latin America'];
@@ -38,7 +38,7 @@ module.exports = (grunt) => {
 			.from.stream(fs.createReadStream(filename))
 			.on('record', (row, index) => {
 				if (index === 0) {
-					return headers = row;
+					return (() => {headers = row; return headers;});
 				}
 				// Build object from csv row
 				row = obj(row);

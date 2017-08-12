@@ -6,15 +6,21 @@
 	"undef": true,
 	"unused": true,
 
-	// Require camelCase typing
-	"camelcase": true,
-
-	// Deep euality
+	// Deep equality
 	"eqeqeq": true,
 
 	// Maximum error numbers before stop building
 	"maxerr": 10,
 
 	// Forbid var usage
-	"varstmt": true
+	"varstmt": true,
+
+	// Enabled browser global variables such as window, document etc.
+	"browser": true,
+
+	// Enable development mode
+	"devel": true,
+
+	// Enable node mode
+	"node": true
 }
