@@ -7,7 +7,7 @@ let csv = require('csv');
 let fs = require('fs');
 
 module.exports = (grunt) => {
-	function countries (filename, done) {
+	let countries = (filename, done) => {
 		let codes = [];
 		// Read from csv stream
 		csv()
@@ -28,12 +28,12 @@ module.exports = (grunt) => {
 			});
 	}
 
-	function filter (source, dest, codes, options, done) {
+	let filter = (source, dest, codes, options, done) => {
 		let headers = [];
 
 		// Creates an object based on row data
-		function obj (row) {
-			return row.reduce(function(data, col, i) {
+		let obj = (row) => {
+			return row.reduce((data, col, i) => {
 				data[headers[i]] = col;
 				return data;
 			}, {});
