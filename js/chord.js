@@ -4,6 +4,7 @@
 ((scope) => {
 
 	let d3_functor = d3.functor;
+	let d3_svg_arcOffset = -π / 2;
 
 	function d3_source (d) {
 		return d.source;
@@ -12,8 +13,6 @@
 	function d3_target (d) {
 		return d.target;
 	}
-
-	let d3_svg_arcOffset = -π / 2;
 
 	function d3_svg_arcStartAngle (d) {
 		return d.startAngle;
