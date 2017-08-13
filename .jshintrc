@@ -24,27 +24,18 @@
 	// Enable node mode
 	"node": true,
 
-	//
+	// Suppress warnings about the use of assignments in cases where comparisons are expected
 	"boss": true,
 
-	//
+	// Suppress warnings about == null comparisons
 	"eqnull": true,
 	
-	//
-	"immed": true,
+	// Prohibit variables to be used before definition
+	"latedef": true
 	
-	//
-	"latedef": true,
-	
-	//
-	"newcap": true,
-	
-	//
+	// Prohibit arguments.caller and argument.callee
 	"noarg": true,
-	
-	//
-	"sub": true,
 
-	//
+	// Require curly braces
 	"curly": true
 }
