@@ -31,7 +31,7 @@
 	"eqnull": true,
 	
 	// Prohibit variables to be used before definition
-	"latedef": true
+	"latedef": true,
 	
 	// Prohibit arguments.caller and argument.callee
 	"noarg": true,
