@@ -6,9 +6,9 @@
 let csv = require('csv');
 let fs = require('fs');
 
-module.exports = (grunt) => {
+module.exports = function (grunt) {
 	// Turn csv data into a JSON mapping
-	function compile (filename, options, done) {
+	let compile = function (filename, options, done) {
 		let data = {
 			years: {
 				1990: {},
@@ -27,18 +27,19 @@ module.exports = (grunt) => {
 		let sortedRegions = ['North America', 'Africa', 'Europe', 'Fmr Soviet Union', 'West Asia', 'South Asia', 'East Asia', 'South-East Asia', 'Oceania', 'Latin America'];
 
 		// Creates an object based on row data
-		function obj (row) {
-			return row.reduce(function(data, col, i) {
+		let obj = function (row) {
+			return row.reduce(function (data, col, i) {
 				data[headers[i]] = col;
 				return data;
 			}, {});
-		}
+		};
 
 		csv()
 			.from.stream(fs.createReadStream(filename))
-			.on('record', (row, index) => {
+			.on('record', function (row, index) {
 				if (index === 0) {
-					return (() => {headers = row; return headers;});
+					headers = row;
+					return headers;
 				}
 				// Build object from csv row
 				row = obj(row);
@@ -72,7 +73,7 @@ module.exports = (grunt) => {
 				data.migrations[row.originregion_name][row.destinationregion_name] = data.migrations[row.originregion_name][row.destinationregion_name] || {};
 
 				// Set data in years order
-				years.forEach((year) => {
+				years.forEach(function (year) {
 					let value = parseInt(row['countryflow_' + year], 10);
 					// country to country
 					data.migrations[row.origin_name][row.destination_name][year] = value;
@@ -88,7 +89,7 @@ module.exports = (grunt) => {
 				});
 			})
 			.on('end', () => {
-				let keys = grunt.util._.union(sortedRegions, Object.keys(data.regions)).reduce((memo, region) => {
+				let keys = grunt.util._.union(sortedRegions, Object.keys(data.regions)).reduce(function (memo, region) {
 					memo.indices.push(memo.keys.length);
 					memo.keys.push(region);
 					memo.keys = memo.keys.concat(data.regions[region] && data.regions[region].sort());
@@ -99,9 +100,9 @@ module.exports = (grunt) => {
 				});
 
 				let mapping = {};
-				years.forEach((year) => {
-					mapping[year] = keys.keys.map((source) => {
-						return keys.keys.map((destination) => {
+				years.forEach(function (year) {
+					mapping[year] = keys.keys.map(function (source) {
+						return keys.keys.map(function (destination) {
 							return data.migrations[source] && data.migrations[source][destination] && data.migrations[source][destination][year];
 						});
 					});
@@ -113,23 +114,22 @@ module.exports = (grunt) => {
 					mapping: mapping
 				});
 			})
-			.on('error', (error) => {
+			.on('error', function (error) {
 				console.error(error.message);
 				done(error);
 			});
-	}
+	};
 
 	// Register compile grunt task
-	grunt.registerMultiTask('compile', 'Compile csv data', () => {
+	grunt.registerMultiTask('compile', 'Compile csv data', function () {
 		let options = this.options();
-
 		let done = this.async();
 
-		this.files.forEach((file) => {
-			file.src.forEach((src) => {
+		this.files.forEach(function (file) {
+			file.src.forEach(function (src) {
 				grunt.log.write('Compiling ' + src + '...');
 
-				compile(src, options, (error, data) => {
+				compile(src, options, function (error, data) {
 					if (error) {
 						grunt.log.error(error);
 					} else {

@@ -7,7 +7,7 @@
 			if (countries.indexOf(region) === -1) {
 				memo.push(region);
 			} else {
-				for (var idx = region + 1; idx < (data.regions[i + 1] || data.names.length); idx++) {
+				for (let idx = region + 1; idx < (data.regions[i + 1] || data.names.length); idx++) {
 					memo.push(idx);
 				}
 			}

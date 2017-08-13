@@ -6,49 +6,50 @@
 let csv = require('csv');
 let fs = require('fs');
 
-module.exports = (grunt) => {
-	let countries = (filename, done) => {
+module.exports = function (grunt) {
+	let countries = function (filename, done) {
 		let codes = [];
 		// Read from csv stream
 		csv()
 			.from.stream(fs.createReadStream(filename))
-			.on('record', (row, index) => {
+			.on('record', function (row, index) {
 				if (index === 0) {
 					return;
 				} else if (row[2] === '1') {
 					codes.push(row[0]);
 				}
 			})
-			.on('end', () => {
+			.on('end', function () {
 				done(null, codes);
 			})
-			.on('error', (error) => {
+			.on('error', function (error) {
 				console.error(error.message);
 				done(error);
 			});
-	}
+	};
 
 	let filter = (source, dest, codes, options, done) => {
 		let headers = [];
 
 		// Creates an object based on row data
-		let obj = (row) => {
+		let obj = function (row) {
 			return row.reduce((data, col, i) => {
 				data[headers[i]] = col;
 				return data;
 			}, {});
-		}
+		};
 
 		csv()
 			.from.stream(fs.createReadStream(source))
 			.to.stream(fs.createWriteStream(dest))
-			.transform((row, index) => {
+			.transform(function (row, index) {
 				if (index === 0) {
-					return (() => {headers = row; return headers;});
+					headers = row;
+					return headers;
 				}
 				// Create object from row
 				let object = obj(row);
-
+				
 				if (options.sample) {
 					if (!object.origin_name.match(options.sample) || !object.destination_name.match(options.sample)) {
 						return null;
@@ -65,16 +66,17 @@ module.exports = (grunt) => {
 				// Return row data
 				return row;
 			})
-			.on('end', () => {
+			.on('end', function () {
 				done(null);
 			})
-			.on('error', (error) => {
+			.on('error', function (error) {
 				console.error(error.message);
 				done(error);
 			});
-	}
+	};
 
-	grunt.registerMultiTask('filter', 'Filter csv data', () => {
+	grunt.registerMultiTask('filter', 'Filter csv data', function () {
+
 		let options = this.options({
 			countries: grunt.option('countries'),
 			sample: grunt.option('sample')
@@ -93,17 +95,17 @@ module.exports = (grunt) => {
 		let files = this.files;
 
 		grunt.log.write('Reading countries ' + options.countries + '...');
-		countries(options.countries, (error, codes) => {
+		countries(options.countries, function (error, codes) {
 			if (error) {
 				grunt.log.error(error);
 			} else {
 				grunt.log.ok();
 
-				files.forEach((file) => {
-					file.src.forEach((src) => {
+				files.forEach(function (file) {
+					file.src.forEach(function (src) {
 						grunt.log.write('Filtering ' + src + '...');
 
-						filter(src, file.dest, codes, options, (error) => {
+						filter(src, file.dest, codes, options, function (error) {
 							if (error) {
 								grunt.log.error(error);
 							} else {
