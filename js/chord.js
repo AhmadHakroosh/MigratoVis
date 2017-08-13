@@ -69,9 +69,9 @@
 
 		function subgroup (self, f, d, i, target) {
 			let subgroup = f.call(self, d, i),
-			r = radius.call(self, subgroup, i),
-			a0 = startAngle.call(self, subgroup, i) + d3_svg_arcOffset,
-			a1 = endAngle.call(self, subgroup, i) + d3_svg_arcOffset;
+				r = radius.call(self, subgroup, i),
+				a0 = startAngle.call(self, subgroup, i) + d3_svg_arcOffset,
+				a1 = endAngle.call(self, subgroup, i) + d3_svg_arcOffset;
 
 			if (target) {
 				let d = targetPadding.call(self, subgroup, i) || 0;
