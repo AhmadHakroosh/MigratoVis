@@ -48,18 +48,18 @@
 			colors.range(config.layout.colors);
 		}
 
-		function arcColor (d) {
+		let arcColor = (d) => {
 			if (d.region === d.id) {
 				return colors(d.region);
 			}
 			let hsl = d3.hsl(colors(d.region));
 			let r = [hsl.brighter(0.75), hsl.darker(2), hsl, hsl.brighter(1.5), hsl.darker(1)];
 			return r[(d.id - d.region) % 5];
-		}
+		};
 
-		function chordColor (d) {
+		let chordColor = (d) => {
 			return arcColor(d.source);
-		}
+		};
 
 		// state before animation
 		let previous = {
@@ -71,16 +71,16 @@
 		};
 
 		// Calculate label position
-		function labelPosition (angle) {
+		let labelPosition = (angle) => {
 			let temp = angle.mod(2*π);
 			return {
 				x: Math.cos(temp - π / 2) * config.labelRadius,
 				y: Math.sin(temp - π / 2) * config.labelRadius,
 				r: (temp - π / 2) * 180 / π
 			};
-		}
+		};
 
-		function formatNumber (nStr, seperator) {
+		let formatNumber = (nStr, seperator) => {
 			seperator = seperator || ',';
 
 			nStr += '';
@@ -92,12 +92,12 @@
 				x1 = x1.replace(regex, '$1' + seperator + '$2');
 			}
 			return x1 + x2;
-		}
+		};
 
-		function luminicity (color) {
+		let luminicity = (color) => {
 			let rgb = d3.rgb(color);
 			return 0.21 * rgb.r + 0.71 * rgb.g + 0.07 * rgb.b;
-		}
+		};
     }
 
 	// arc path generator
@@ -215,7 +215,7 @@
 	let infoTimer;
 
 	// eg: West Africa: Total inflow 46, Total outflow 2
-	function groupInfo (d) {
+	let groupInfo = (d) => {
 		let el = this;
 
 		if (infoTimer) {
@@ -254,11 +254,11 @@
 
 			info.transition().attr('opacity', 1);
 		}, config.infoPopupDelay);
-	}
+	};
 
 	// chord info
 	// eg: West Asia → Pacific: 46
-	function chordInfo (d) {
+	let chordInfo = (d) => {
 		let el = this;
 
 		if (infoTimer) {
@@ -294,45 +294,45 @@
 				height: tbbox.height + 10
 			});
 		}, config.infoPopupDelay);
-	}
+	};
 
-	function rememberTheGroups () {
+	let rememberTheGroups = () => {
 		previous.groups = layout.groups().reduce((sum, d) => {
 			sum[d.id] = d;
 			return sum;
 		}, {});
-	}
+	};
 
-	function rememberTheChords () {
+	let rememberTheChords = () => {
 		previous.chords = layout.chords().reduce((sum, d) => {
 			sum[d.source.id] = sum[d.source.id] || {};
 			sum[d.source.id][d.target.id] = d;
 			return sum;
 		}, {});
-	}
+	};
 
-	function getCountryRange (id) {
+	let getCountryRange = (id) => {
 		let end = data.regions[data.regions.indexOf(id) + 1];
 
 		return {
 			start: id + 1,
 			end: end ? end - 1 : data.names.length - 1
 		};
-	}
+	};
 
-	function inRange (id, range) {
+	let inRange = (id, range) => {
 		return id >= range.start && id <= range.end;
-	}
+	};
 
-	function inAnyRange (d, ranges) {
+	let inAnyRange = (d, ranges) => {
 		return !!ranges.filter((range) => {
 			return inRange(d.source.id, range) || inRange(d.target.id, range);
 		}).length;
-	}
+	};
 
 	// Transition countries to region:
 	// Use first country's start angle and last countries end angle. 
-	function meltPreviousGroupArc (d) {
+	let meltPreviousGroupArc = (d) => {
 		if (d.id !== d.region) {
 			return;
 		}
@@ -350,12 +350,12 @@
 			startAngle: start.startAngle,
 			endAngle: end.endAngle
 		};
-	}
+	};
 
 	// Used to set the startpoint for
 	// countries -> region
 	// transition, that is closing a region.
-	function meltPreviousChord (d) {
+	let meltPreviousChord = (d) => {
 		if (d.source.id !== d.source.region) {
 			return;
 		}
@@ -401,5 +401,5 @@
 		c.target.endAngle = c.target.startAngle + µ;
 
 		return c;
-	}
+	};
 })(window.migrato || (window.migrato = {}));
