@@ -6,10 +6,10 @@
 	"undef": true,
 	"unused": true,
 
-	// Deep equality
+	// Strict equality
 	"eqeqeq": true,
 
-	// Maximum error numbers before stop building
+	// Maximum errors before stop building
 	"maxerr": 10,
 
 	// Forbid var usage
@@ -22,5 +22,29 @@
 	"devel": true,
 
 	// Enable node mode
-	"node": true
+	"node": true,
+
+	//
+	"boss": true,
+
+	//
+	"eqnull": true,
+	
+	//
+	"immed": true,
+	
+	//
+	"latedef": true,
+	
+	//
+	"newcap": true,
+	
+	//
+	"noarg": true,
+	
+	//
+	"sub": true,
+
+	//
+	"curly": true
 }
