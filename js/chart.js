@@ -416,6 +416,254 @@
 		layout
 			.year(year)
 			.countries(countries);
+
+		// groups
+		var group = element.selectAll(".group")
+			.data(layout.groups, function (d) { return d.id; });
+		
+		group.enter()
+			.append("g")
+			.attr("class", "group");
+		
+		group
+			.on("mouseover", function (d) {
+				chord.classed("fade", function (p) {
+					return p.source.id !== d.id && p.target.id !== d.id;
+				});
+			});
+		
+		group.exit().remove();
+
+		// group arc
+		var groupPath = group.selectAll('.group-arc')
+			.data(function (d) { return [d]; });
+		
+		groupPath.enter()
+			.append('path')
+			.attr("class", "group-arc")
+			.attr("id", function (d, i, k) { return "group" + k; });
+		
+		groupPath
+			.style("fill", arcColor)
+			.on("mousemove", groupInfo)
+			.transition()
+			.duration(config.animationDuration)
+			.attrTween("d", function (d) {
+				var i = d3.interpolate(previous.groups[d.id] || previous.groups[d.region] || meltPreviousGroupArc(d) || config.initialAngle.arc, d);
+					return function (t) { return arc(i(t)); };
+				});
+		
+		groupPath.exit().remove();
+
+		// open regions
+		groupPath
+			.filter(function (d) {
+				return d.id === d.region;
+			})
+			.on('click', function (d) {
+				if (countries.length + 1 > config.maxRegionsOpen) {
+					countries.shift();
+				}
+				draw(year, countries.concat(d.id));
+			});
+
+		// close regions
+		groupPath
+			.filter(function (d) {
+				return d.id !== d.region;
+			})
+			.on('click', function (d) {
+				countries.splice(countries.indexOf(d.region), 1);
+				draw(year, countries);
+			});
+
+
+		// text label group
+		var groupTextGroup = element.selectAll('.label')
+			.data(layout.groups, function (d) { return d.id; });
+
+		groupTextGroup.enter()
+			.append("g")
+			.attr('class', 'label');
+		
+		groupTextGroup
+			.filter(function (d) {return d.id !== d.region})
+			.transition()
+			.duration(config.animationDuration)
+			.attrTween("transform", function (d) {
+				var i = d3.interpolate(previous.groups[d.id] || previous.groups[d.region] || meltPreviousGroupArc(d) || { angle: 0 }, d);
+				return function (t) {
+					var t = labelPosition(i(t).angle);
+					return 'translate(' + t.x + ' ' + t.y + ') rotate(' + t.r + ')';
+				};
+			});
+
+		groupTextGroup.exit()
+			.transition()
+			.duration(config.animationDuration)
+			.style('opacity', 0)
+			.attrTween("transform", function (d) {
+				// do not animate region labels
+				if (d.id === d.region) {
+					return;
+				}
+
+				var region = layout.groups().filter(function (g) { return g.id === d.region });
+				region = region && region[0];
+				var angle = region && (region.startAngle + (region.endAngle - region.startAngle) / 2);
+				angle = angle || 0;
+				var i = d3.interpolate(d, { angle: angle });
+
+				return function (t) {
+					var t = labelPosition(i(t).angle);
+					return 'translate(' + t.x + ' ' + t.y + ') rotate(' + t.r + ')';
+				};
+			})
+			.each('end', function () {
+				d3.select(this).remove();
+			});
+
+		// labels
+		var groupText = groupTextGroup.selectAll('text')
+			.data(function (d) { return [d]; });
+
+		groupText.enter()
+			.append("text");
+
+		groupText
+			.classed('region', function (d) {
+				return d.id === d.region;
+			})
+			.text(function (d) { 
+				if (d.id !== d.region) {
+					return data.names[d.id];
+				} 
+			})
+			.attr('transform', function (d) {
+				if (d.id !== d.region) {
+					return d.angle.mod(2*π) > π ? 'translate(0, -4) rotate(180)' : 'translate(0, 4)';
+				}
+			})
+			.attr('text-anchor', function (d) {
+				return d.id === d.region ? 'middle' : (d.angle.mod(2*π) > π ? 'end' : 'start');
+			})
+			.style('fill', function (d) {
+				return d.id === d.region ? arcColor(d) : null;
+			})
+			.classed('fade', function (d) {
+			// hide labels for countries with little migrations
+				return d.value < config.layout.labelThreshold;
+			});
+
+		// path for text-on-path
+		var groupTextPathPath = group
+			.filter(function (d) {return d.id === d.region})
+			.selectAll('.group-textpath-arc')
+			.data(function (d) { return [d]; });
+
+		groupTextPathPath.enter()
+			.append('path')
+			.attr("class", "group-textpath-arc")
+			.attr("id", function (d, i, k) { return "group-textpath-arc" + d.id; });
+
+		groupTextPathPath
+			.style("fill", 'none')
+			.transition()
+			.duration(config.animationDuration)
+			.attrTween("d", function (d) {
+				var i = d3.interpolate(previous.groups[d.id] || previous.groups[d.region] || meltPreviousGroupArc(d) || config.initialAngle.arc, d);
+				if (d.angle.mod(2*π) > π/2 && d.angle.mod(2*π) < π*3/2) {
+					return function (t) {
+						return textPathArc2(i(t)); 
+					};
+				} else {
+					return function (t) {
+						return textPathArc(i(t)); 
+					};
+				}
+			});
+
+		groupTextPathPath.exit().remove();
+
+		// text on path
+		var groupTextPath = groupText
+			.filter(function (d) {return d.id === d.region})
+			.selectAll('textPath')
+			.data(function (d) { return [d]; });
+
+		groupTextPath
+			.enter()
+			.append("textPath");
+
+		groupTextPath
+			.text(function (d) { return data.names[d.id]; })
+			.attr('startOffset', function (d) {
+				if (d.angle.mod(2*π) > π/2 && d.angle.mod(2*π) < π*3/2) {
+					return '75%';
+				} else {
+					return '25%';
+				}
+			})
+			.attr("xlink:href", function (d, i, k) { return "#group-textpath-arc" + d.id; });
+
+
+		groupTextPath
+			.filter(function (d, i) {
+				return this.getComputedTextLength() > (d.endAngle - d.startAngle) * (config.outerRadius + 18);
+			})
+			.remove();
+
+		// chords
+		var chord = element.selectAll(".chord")
+			.data(layout.chords, function (d) { return d.id; });
+
+		chord.enter()
+			.append("path")
+			.attr("class", "chord")
+			.on('mousemove', chordInfo);
+			chord
+			.style("fill", chordColor)
+			.transition()
+			.duration(config.animationDuration)
+			.attrTween("d", function (d) {
+				var p = previous.chords[d.source.id] && previous.chords[d.source.id][d.target.id];
+				p = p || (previous.chords[d.source.region] && previous.chords[d.source.region][d.target.region]);
+				p = p || meltPreviousChord(d);
+				p = p || config.initialAngle.chord;
+				var i = d3.interpolate(p, d);
+				return function (t) {
+					return chordGenerator(i(t));
+				};
+			});
+
+		chord.exit()
+			.transition()
+			.duration(config.animationDuration)
+			.style('opacity', 0)
+			.attrTween("d", function (d) {
+				var i = d3.interpolate(d, {
+					source: {
+						startAngle: d.source.endAngle - µ,
+						endAngle: d.source.endAngle
+					},
+					target: {
+						startAngle: d.target.endAngle - µ,
+						endAngle: d.target.endAngle
+					}
+				});
+				return function (t) {
+					return chordGenerator(i(t));
+				};
+			})
+			.each('end', function () {
+				d3.select(this).remove();
+			});
+
+		chord.classed("unselected", ranges.length ? function (d) {
+			return !inAnyRange(d, ranges);
+		} : false);
+
+		d3.select(window).on('resize.svg-resize')();
 	}
 
 	return {
