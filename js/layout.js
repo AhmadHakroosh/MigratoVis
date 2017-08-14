@@ -32,6 +32,23 @@
 		function relayout () {
 			// TODO
 		}
+
+		function resort () {
+			chords.sort(function (a, b) {
+				return sortChords(a.source.value, b.source.value);
+			});
+		}
+
+		chord.data = function (x) {
+			if (!arguments.length) {
+				return data;
+			}
+			data = x;
+			indices = data.regions.slice();
+			n = indices.length;
+			chords = groups = null;
+			return chord;
+		}
 	};	
 })(window.migrato || (window.migrato = {}));
 
