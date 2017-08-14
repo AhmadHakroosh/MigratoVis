@@ -402,5 +402,26 @@
 
 		return c;
 	};
+
+	var draw = function (year, countries) {
+		year = year || Object.keys(data.matrix)[0];
+		countries = countries || previous.countries;
+		previous.countries = countries;
+
+		var ranges = countries.map(getCountryRange);
+
+		rememberTheGroups();
+		rememberTheChords();
+
+		layout
+			.year(year)
+			.countries(countries);
+	}
+
+	return {
+		draw: draw,
+		data: data
+	};
+
 })(window.migrato || (window.migrato = {}));
 
