@@ -40,7 +40,10 @@ module.exports = (grunt) => {
 				src: [
 					'lib/modernizr.js',
 					'lib/d3.min.js',
-					'js/chart.js'
+					'js/chart.js',
+					'js/periods.js',
+					'js/merge.js',
+					'js/chord.js'
 				],
 				dest: 'dest/index.js'
 			},
