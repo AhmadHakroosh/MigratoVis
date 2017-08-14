@@ -28,6 +28,10 @@
 			}
 			return data.regions[r];
 		}
+
+		function relayout () {
+			// TODO
+		}
 	};	
 })(window.migrato || (window.migrato = {}));
 
