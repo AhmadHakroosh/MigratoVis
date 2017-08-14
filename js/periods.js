@@ -14,4 +14,5 @@
 		var year = form.selectAll('.year').data(years);
 		var span = year.enter().append('span').classed('year', true);
 	};
-})(window.migrato || (window.migrato = {}))
+})(window.migrato || (window.migrato = {}));
+

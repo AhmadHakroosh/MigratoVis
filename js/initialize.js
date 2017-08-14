@@ -1,4 +1,4 @@
-(() => {
+(function () {
 	// Filtered data file
 	var datafile = 'data/data.json';
 
@@ -28,4 +28,5 @@
 
 		chart.draw(now);
 	});
-})()
+})();
+

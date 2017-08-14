@@ -16,4 +16,5 @@
 
 		}, []);
 	};
-})((typeof exports !== 'undefined' && exports) || window.migrato || (window.migrato = {}))
+})((typeof exports !== 'undefined' && exports) || window.migrato || (window.migrato = {}));
+

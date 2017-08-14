@@ -163,4 +163,5 @@
 		return d.sourcePadding;
 	}
 
-})(window.migrato || (window.migrato = {})
+})(window.migrato || (window.migrato = {}));
+

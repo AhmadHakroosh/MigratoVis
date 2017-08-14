@@ -402,4 +402,5 @@
 
 		return c;
 	};
-})(window.migrato || (window.migrato = {}))
+})(window.migrato || (window.migrato = {}));
+

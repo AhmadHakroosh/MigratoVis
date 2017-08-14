@@ -22,11 +22,11 @@
     "grunt": "~1.0.1",
     "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-jshint": "~1.1.0",
-    "csv": "~0.3.2",
-    "http-server": "~0.10.0",
     "grunt-contrib-concat": "~1.0.0",
     "grunt-contrib-uglify": "~1.0.0",
     "grunt-contrib-cssmin": "~1.0.0",
-    "grunt-contrib-copy": "~1.0.0"
+    "grunt-contrib-copy": "~1.0.0",
+    "http-server": "~0.10.0",
+    "csv": "~0.3.2"
   }
 }
