@@ -1,10 +1,10 @@
 // This is an extension for d3.svg.chord
 // contains sourcePadding and targetPadding
 
-((scope) => {
+(function (scope) {
 
-	let d3_functor = d3.functor;
-	let d3_svg_arcOffset = -π / 2;
+	var d3_functor = d3.functor;
+	var d3_svg_arcOffset = -π / 2;
 
 	function d3_source (d) {
 		return d.source;
@@ -22,8 +22,8 @@
 		return d.endAngle;
 	}
 
-	scope.chord = () => {
-		let source = d3_source,
+	scope.chord = function () {
+		var source = d3_source,
 			target = d3_target,
 			radius = d3_svg_chordRadius,
 			sourcePadding = d3_svg_chordSourcePadding,
@@ -32,7 +32,7 @@
 			endAngle = d3_svg_arcEndAngle;
 
 		function chord (d, i) {
-			let s = subgroup(this, source, d, i),
+			var s = subgroup(this, source, d, i),
 				t = subgroup(this, target, d, i, true);
 
 			if (equals(s, t)) {
@@ -43,7 +43,7 @@
 				t.p0 = [t.r * Math.cos(t.a0), t.r * Math.sin(t.a0)];
 			}
 
-			let ccp = cubic_control_points(s, t, s.r * 0.618);
+			var ccp = cubic_control_points(s, t, s.r * 0.618);
 
 			return "M" + s.p0
 				+ arc(s.r, s.p1, s.a1 - s.a0)
@@ -68,16 +68,16 @@
 		}
 
 		function subgroup (self, f, d, i, target) {
-			let subgroup = f.call(self, d, i),
+			var subgroup = f.call(self, d, i),
 				r = radius.call(self, subgroup, i),
 				a0 = startAngle.call(self, subgroup, i) + d3_svg_arcOffset,
 				a1 = endAngle.call(self, subgroup, i) + d3_svg_arcOffset;
 
 			if (target) {
-				let d = targetPadding.call(self, subgroup, i) || 0;
+				var d = targetPadding.call(self, subgroup, i) || 0;
 				r = r - d;
 			} else {
-				let d = sourcePadding.call(self, subgroup, i) || 0;
+				var d = sourcePadding.call(self, subgroup, i) || 0;
 				r = r - d;
 			}
 
@@ -106,43 +106,43 @@
 			return "C " + cp0 + " " + cp1 + " " + p1;
 		}
 
-		chord.radius = (v) => {
+		chord.radius = function (v) {
 			if (!arguments.length) { return radius };
 			radius = d3_functor(v);
 			return chord;
 		};
 
-		chord.sourcePadding = (v) => {
+		chord.sourcePadding = function (v) {
 			if (!arguments.length) { return sourcePadding };
 			sourcePadding = d3_functor(v);
 			return chord;
 		};
 
-		chord.targetPadding = (v) => {
+		chord.targetPadding = function (v) {
 			if (!arguments.length) { return targetPadding };
 			targetPadding = d3_functor(v);
 			return chord;
 		};
 
-		chord.source = (v) => {
+		chord.source = function (v) {
 			if (!arguments.length) { return source };
 			source = d3_functor(v);
 			return chord;
 		};
 
-		chord.target = (v) => {
+		chord.target = function (v) {
 			if (!arguments.length) { return target };
 			target = d3_functor(v);
 			return chord;
 		};
 
-		chord.startAngle = (v) => {
+		chord.startAngle = function (v) {
 			if (!arguments.length) { return startAngle };
 			startAngle = d3_functor(v);
 			return chord;
 		};
 
-		chord.endAngle = (v) => {
+		chord.endAngle = function (v) {
 			if (!arguments.length) { return endAngle };
 			endAngle = d3_functor(v);
 			return chord;
@@ -163,4 +163,4 @@
 		return d.sourcePadding;
 	}
 
-})(window.migrato || (window.migrato = {});
+})(window.migrato || (window.migrato = {})

@@ -1,7 +1,7 @@
 // Initialize diagram
 // Build main application infrastructure and configuration
-((scope) => {
-	scope.chart = (data, config) => {
+(function (scope) {
+	scope.chart = function (data, config) {
 		// Get data if defined; instantiate otherwise
     	data = data || {regions: [], names: [], mapping: []};
     	// Get application configuration if defined; initialize otherwise
@@ -42,37 +42,37 @@
 		// Data info pop-up delay
 		config.infoPopupDelay = config.infoPopupDelay || 300;
 
-		let colors = d3.scale.category10().domain(data.regions);
+		var colors = d3.scale.category10().domain(data.regions);
 
 		if (config.layout.colors) {
 			colors.range(config.layout.colors);
 		}
 
-		let arcColor = (d) => {
+		var arcColor = function (d) {
 			if (d.region === d.id) {
 				return colors(d.region);
 			}
-			let hsl = d3.hsl(colors(d.region));
-			let r = [hsl.brighter(0.75), hsl.darker(2), hsl, hsl.brighter(1.5), hsl.darker(1)];
+			var hsl = d3.hsl(colors(d.region));
+			var r = [hsl.brighter(0.75), hsl.darker(2), hsl, hsl.brighter(1.5), hsl.darker(1)];
 			return r[(d.id - d.region) % 5];
 		};
 
-		let chordColor = (d) => {
+		var chordColor = function (d) {
 			return arcColor(d.source);
 		};
 
 		// state before animation
-		let previous = {
+		var previous = {
 			countries: []
 		};
 
-		Number.prototype.mod = (n) => {
+		Number.prototype.mod = function (n) {
 			return ((this % n) + n) % n;
 		};
 
 		// Calculate label position
-		let labelPosition = (angle) => {
-			let temp = angle.mod(2*π);
+		var labelPosition = function (angle) {
+			var temp = angle.mod(2*π);
 			return {
 				x: Math.cos(temp - π / 2) * config.labelRadius,
 				y: Math.sin(temp - π / 2) * config.labelRadius,
@@ -80,42 +80,42 @@
 			};
 		};
 
-		let formatNumber = (nStr, seperator) => {
+		var formatNumber = function (nStr, seperator) {
 			seperator = seperator || ',';
 
 			nStr += '';
 			x = nStr.split('.');
 			x1 = x[0];
 			x2 = x.length > 1 ? '.' + x[1] : '';
-			let regex = /(\d+)(\d{3})/;
+			var regex = /(\d+)(\d{3})/;
 			while (regex.test(x1)) {
 				x1 = x1.replace(regex, '$1' + seperator + '$2');
 			}
 			return x1 + x2;
 		};
 
-		let luminicity = (color) => {
-			let rgb = d3.rgb(color);
+		var luminicity = function (color) {
+			var rgb = d3.rgb(color);
 			return 0.21 * rgb.r + 0.71 * rgb.g + 0.07 * rgb.b;
 		};
     }
 
 	// arc path generator
-	let textPathArc = d3.svg.arc()
+	var textPathArc = d3.svg.arc()
 		.innerRadius(config.outerRadius + 10)
 		.outerRadius(config.outerRadius + 10);
 
-	let textPathArc2 = d3.svg.arc()
+	var textPathArc2 = d3.svg.arc()
 		.innerRadius(config.outerRadius + 18)
 		.outerRadius(config.outerRadius + 18);
 
 	// arc generator
-	let arc = d3.svg.arc()
+	var arc = d3.svg.arc()
 		.innerRadius(config.innerRadius)
 		.outerRadius(config.outerRadius);
 
 	// chord diagram
-	let layout = Globalmigration.layout()
+	var layout = Globalmigration.layout()
 		.padding(config.arcPadding)
 		.threshold(config.layout.threshold)
 		.data(data)
@@ -138,24 +138,24 @@
 	}
 
 	// chord path generator
-	let chordGenerator = Globalmigration.chord()
+	var chordGenerator = Globalmigration.chord()
 		.radius(config.innerRadius)
 		.sourcePadding(config.sourcePadding)
 		.targetPadding(config.targetPadding);
 
 	// svg element
-	let svg = d3.select(config.element).append("svg")
+	var svg = d3.select(config.element).append("svg")
 		.attr('preserveAspectRatio', 'xMidYMid')
 		.attr('viewBox', '0 0 ' + config.width + ' ' + config.height)
 		.attr("width", config.width)
 		.attr("height", config.height);
 
-	let element = svg.append("g")
+	var element = svg.append("g")
 		.attr("id", "circle")
 		.attr("transform", "translate(" + config.width / 2 + "," + config.height / 2 + ")");
 
-	d3.select(window).on('resize.svg-resize', () => {
-		let width = svg.node().parentNode.clientWidth;
+	d3.select(window).on('resize.svg-resize', function () {
+		var width = svg.node().parentNode.clientWidth;
 
 		if (width) {
 			// make height adapt to shrinking of page
@@ -166,8 +166,8 @@
 	});
 
 	// needed for fade mouseover
-	let circle = element.append("circle").attr("r", config.outerRadius + 24);
-	let filter = svg.append('filter').attr('id', 'dropshadow');
+	var circle = element.append("circle").attr("r", config.outerRadius + 24);
+	var filter = svg.append('filter').attr('id', 'dropshadow');
 
 	filter.append('feGaussianBlur').attr({
 		in: 'SourceAlpha',
@@ -185,12 +185,12 @@
 		slope: 0.5
 	});
 
-	let femerge = filter.append('feMerge');
+	var femerge = filter.append('feMerge');
 
 	femerge.append('feMergeNode');
 	femerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-	let info = svg.append('g')
+	var info = svg.append('g')
 		.attr('class', 'info-group')
 		.attr("transform", "translate(" + config.width / 2 + "," + config.height / 2 + ")")
 		.append('g')
@@ -201,34 +201,34 @@
 
 	info.append('g').attr('class', 'text');
 
-	svg.on('mousemove', () => {
+	svg.on('mousemove', function () {
 		info.transition().duration(10).attr('opacity', 0);
 	});
 
-	circle.on('mouseout', () => {
+	circle.on('mouseout', function () {
 		if (infoTimer) {
 			clearTimeout(infoTimer);
 		}
 		info.transition().duration(10).attr('opacity', 0);
 	});
 
-	let infoTimer;
+	var infoTimer;
 
 	// eg: West Africa: Total inflow 46, Total outflow 2
-	let groupInfo = (d) => {
-		let el = this;
+	var groupInfo = function (d) {
+		var el = this;
 
 		if (infoTimer) {
 			clearTimeout(infoTimer);
 		}
 
-		let bbox = el.getBBox();
-		infoTimer = setTimeout(() => {
-			let color = d3.select(el).style('fill');
+		var bbox = el.getBBox();
+		infoTimer = setTimeout(function () {
+			var color = d3.select(el).style('fill');
 
 			info.attr('transform', 'translate(' + (bbox.x + bbox.width / 2) + ',' + (bbox.y + bbox.height / 2) + ')');
 
-			let text = info.select('.text').selectAll('text')
+			var text = info.select('.text').selectAll('text')
 				.data([
 					data.names[d.id],
 					'Total In: ' + formatNumber(d.inflow),
@@ -236,16 +236,16 @@
 				]);
 
 			text.enter().append('text');
-			text.text(function(t) { return t; }).style({
+			text.text(function (t) { return t; }).style({
 				fill: luminicity(color) > 160 ? 'black' : 'white'
 			}).attr({
-				transform: (t, i) => {
+				transform: function (t, i) {
 					return 'translate(6, ' + (i * 14 + 16) + ')';
 				}
 			});
 
 			text.exit().remove();
-			let tbbox = info.select('.text').node().getBBox();
+			var tbbox = info.select('.text').node().getBBox();
 
 			info.select('rect').style('fill', color).attr({
 				width: tbbox.width + 12,
@@ -258,37 +258,37 @@
 
 	// chord info
 	// eg: West Asia → Pacific: 46
-	let chordInfo = (d) => {
-		let el = this;
+	var chordInfo = function (d) {
+		var el = this;
 
 		if (infoTimer) {
 			clearTimeout(infoTimer);
 		}
 
-		let bbox = el.getBBox();
-		infoTimer = setTimeout(() => {
-			let color = d3.select(el).style('fill');
+		var bbox = el.getBBox();
+		infoTimer = setTimeout(function () {
+			var color = d3.select(el).style('fill');
 
 			info.attr('transform', 'translate(' + (bbox.x + bbox.width / 2) + ',' + (bbox.y + bbox.height / 2) + ')')
 				.attr('opacity', 0)
 				.transition()
 				.attr('opacity', 1);
 
-			let text = info.select('.text').selectAll('text').data([
+			var text = info.select('.text').selectAll('text').data([
 				data.names[d.source.id] + ' → ' + data.names[d.target.id] + ': ' + formatNumber(d.source.value)
 			]);
 
 			text.enter().append('text');
 			text.exit().remove();
-			text.text((t) => { return t; }).style({
+			text.text(function (t) { return t; }).style({
 				fill: luminicity(color) > 160 ? 'black' : 'white'
-			}).attr('transform', (t, i) => {
+			}).attr('transform', function (t, i) {
 				return 'translate(6, ' + (i * 12 + 16) + ')';
 			});
 
 			info.selectAll('rect').style('fill', d3.select(el).style('fill'));
 
-			let tbbox = info.select('.text').node().getBBox();
+			var tbbox = info.select('.text').node().getBBox();
 			info.select('rect').attr({
 				width: tbbox.width + 12,
 				height: tbbox.height + 10
@@ -296,23 +296,23 @@
 		}, config.infoPopupDelay);
 	};
 
-	let rememberTheGroups = () => {
-		previous.groups = layout.groups().reduce((sum, d) => {
+	var rememberTheGroups = function () {
+		previous.groups = layout.groups().reduce(function (sum, d) {
 			sum[d.id] = d;
 			return sum;
 		}, {});
 	};
 
-	let rememberTheChords = () => {
-		previous.chords = layout.chords().reduce((sum, d) => {
+	var rememberTheChords = function () {
+		previous.chords = layout.chords().reduce(function (sum, d) {
 			sum[d.source.id] = sum[d.source.id] || {};
 			sum[d.source.id][d.target.id] = d;
 			return sum;
 		}, {});
 	};
 
-	let getCountryRange = (id) => {
-		let end = data.regions[data.regions.indexOf(id) + 1];
+	var getCountryRange = function (id) {
+		var end = data.regions[data.regions.indexOf(id) + 1];
 
 		return {
 			start: id + 1,
@@ -320,26 +320,26 @@
 		};
 	};
 
-	let inRange = (id, range) => {
+	var inRange = function (id, range) {
 		return id >= range.start && id <= range.end;
 	};
 
-	let inAnyRange = (d, ranges) => {
-		return !!ranges.filter((range) => {
+	var inAnyRange = function (d, ranges) {
+		return !!ranges.filter(function (range) {
 			return inRange(d.source.id, range) || inRange(d.target.id, range);
 		}).length;
 	};
 
 	// Transition countries to region:
 	// Use first country's start angle and last countries end angle. 
-	let meltPreviousGroupArc = (d) => {
+	var meltPreviousGroupArc = function (d) {
 		if (d.id !== d.region) {
 			return;
 		}
 
-		let range = getCountryRange(d.id);
-		let start = previous.groups[range.start];
-		let end = previous.groups[range.end];
+		var range = getCountryRange(d.id);
+		var start = previous.groups[range.start];
+		var end = previous.groups[range.end];
 
 		if (!start || !end) {
 			return;
@@ -355,19 +355,19 @@
 	// Used to set the startpoint for
 	// countries -> region
 	// transition, that is closing a region.
-	let meltPreviousChord = (d) => {
+	var meltPreviousChord = function (d) {
 		if (d.source.id !== d.source.region) {
 			return;
 		}
 
-		let c = {
+		var c = {
 			source: {},
 			target: {}
 		};
 
-		Object.keys(previous.chords).forEach((sourceId) => {
-			Object.keys(previous.chords[sourceId]).forEach((targetId) => {
-				let chord = previous.chords[sourceId][targetId];
+		Object.keys(previous.chords).forEach(function (sourceId) {
+			Object.keys(previous.chords[sourceId]).forEach(function (targetId) {
+				var chord = previous.chords[sourceId][targetId];
 
 				if (chord.source.region === d.source.id) {
 					if (!c.source.startAngle || chord.source.startAngle < c.source.startAngle) {
@@ -402,4 +402,4 @@
 
 		return c;
 	};
-})(window.migrato || (window.migrato = {}));
+})(window.migrato || (window.migrato = {}))

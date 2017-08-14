@@ -1,7 +1,4 @@
 {
-	// ECMAScript 6 valid code
-	"esversion": 6,
-
 	// Unused and undefined strictness
 	"undef": true,
 	"unused": true,
@@ -11,9 +8,6 @@
 
 	// Maximum errors before stop building
 	"maxerr": 10,
-
-	// Forbid var usage
-	"varstmt": true,
 
 	// Enabled browser global variables such as window, document etc.
 	"browser": true,

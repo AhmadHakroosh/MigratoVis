@@ -1,6 +1,6 @@
 /* jshint node: true */
 
-module.exports = (grunt) => {
+module.exports = function (grunt) {
 	grunt.initConfig({
 		// Configuration initialization
 		jshint: {

@@ -1,13 +1,13 @@
 // Merge countries - by their indexes
 
-((scope) => {
-	scope.merge = (data, countries) => {
+(function (scope) {
+	scope.merge = function (data, countries) {
 
-		return data.regions.reduce((memo, region, i) => {
+		return data.regions.reduce(function (memo, region, i) {
 			if (countries.indexOf(region) === -1) {
 				memo.push(region);
 			} else {
-				for (let idx = region + 1; idx < (data.regions[i + 1] || data.names.length); idx++) {
+				for (var idx = region + 1; idx < (data.regions[i + 1] || data.names.length); idx++) {
 					memo.push(idx);
 				}
 			}
@@ -16,4 +16,4 @@
 
 		}, []);
 	};
-})((typeof exports !== 'undefined' && exports) || window.migrato || (window.migrato = {}));
+})((typeof exports !== 'undefined' && exports) || window.migrato || (window.migrato = {}))

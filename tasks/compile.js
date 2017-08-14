@@ -3,13 +3,13 @@
 
 'use strict';
 
-let csv = require('csv');
-let fs = require('fs');
+var csv = require('csv');
+var fs = require('fs');
 
 module.exports = function (grunt) {
 	// Turn csv data into a JSON mapping
-	let compile = function (filename, options, done) {
-		let data = {
+	var compile = function (filename, options, done) {
+		var data = {
 			years: {
 				1990: {},
 				1995: {},
@@ -20,14 +20,14 @@ module.exports = function (grunt) {
 			regions: {}
 		};
 
-		let years = Object.keys(data.years);
-		let headers = [];
+		var years = Object.keys(data.years);
+		var headers = [];
 
 		// Define sort order
-		let sortedRegions = ['North America', 'Africa', 'Europe', 'Fmr Soviet Union', 'West Asia', 'South Asia', 'East Asia', 'South-East Asia', 'Oceania', 'Latin America'];
+		var sortedRegions = ['North America', 'Africa', 'Europe', 'Fmr Soviet Union', 'West Asia', 'South Asia', 'East Asia', 'South-East Asia', 'Oceania', 'Latin America'];
 
 		// Creates an object based on row data
-		let obj = function (row) {
+		var obj = function (row) {
 			return row.reduce(function (data, col, i) {
 				data[headers[i]] = col;
 				return data;
@@ -49,7 +49,7 @@ module.exports = function (grunt) {
 				}
 				// Check for each entry if the country name does not start with 'A'
 				if (options.sample) {
-					let test = new RegExp('^' + options.sample);
+					var test = new RegExp('^' + options.sample);
 					if (!row.origin_name.match(test) || !row.destination_name.match(test)) {
 						return;
 					}
@@ -74,7 +74,7 @@ module.exports = function (grunt) {
 
 				// Set data in years order
 				years.forEach(function (year) {
-					let value = parseInt(row['countryflow_' + year], 10);
+					var value = parseInt(row['countryflow_' + year], 10);
 					// country to country
 					data.migrations[row.origin_name][row.destination_name][year] = value;
 					// country to region
@@ -88,8 +88,8 @@ module.exports = function (grunt) {
 					data.migrations[row.originregion_name][row.destinationregion_name][year] += value;
 				});
 			})
-			.on('end', () => {
-				let keys = grunt.util._.union(sortedRegions, Object.keys(data.regions)).reduce(function (memo, region) {
+			.on('end', function () {
+				var keys = grunt.util._.union(sortedRegions, Object.keys(data.regions)).reduce(function (memo, region) {
 					memo.indices.push(memo.keys.length);
 					memo.keys.push(region);
 					memo.keys = memo.keys.concat(data.regions[region] && data.regions[region].sort());
@@ -99,7 +99,7 @@ module.exports = function (grunt) {
 					keys: []
 				});
 
-				let mapping = {};
+				var mapping = {};
 				years.forEach(function (year) {
 					mapping[year] = keys.keys.map(function (source) {
 						return keys.keys.map(function (destination) {
@@ -122,8 +122,8 @@ module.exports = function (grunt) {
 
 	// Register compile grunt task
 	grunt.registerMultiTask('compile', 'Compile csv data', function () {
-		let options = this.options();
-		let done = this.async();
+		var options = this.options();
+		var done = this.async();
 
 		this.files.forEach(function (file) {
 			file.src.forEach(function (src) {
