@@ -35,15 +35,16 @@ module.exports = function (grunt) {
 		concat: {
 			js: {
 				options: {
-					separator: ';'
+					separator: ''
 				},
 				src: [
 					'lib/modernizr.js',
 					'lib/d3.min.js',
-					'js/chart.js',
-					'js/periods.js',
 					'js/merge.js',
-					'js/chord.js'
+					'js/layout.js',
+					'js/chord.js',
+					'js/periods.js',
+					'js/chart.js'
 				],
 				dest: 'dest/index.js'
 			},

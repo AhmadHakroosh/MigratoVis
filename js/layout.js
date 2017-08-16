@@ -49,6 +49,107 @@
 			chords = groups = null;
 			return chord;
 		}
+
+		chord.year = function (x) {
+			if (!arguments.length) {
+				return year;
+			}
+			year = x;
+			chords = groups = null;
+			return chord;
+		};
+
+		chord.countries = function (x) {
+			if (!arguments.length) {
+				return countries;
+			}
+			countries = x;
+			indices = scope.countrymerge(data, countries);
+			n = indices.length;
+			chords = groups = null;
+			return chord;
+		};
+
+		chord.padding = function (x) {
+			if (!arguments.length) {
+				return padding;
+			}
+			padding = x;
+			chords = groups = null;
+			return chord;
+		};
+
+		chord.threshold = function (x) {
+			if (!arguments.length) {
+				return threshold;
+			}
+			threshold = x;
+			chords = groups = null;
+			return chord;
+		};
+
+		chord.sortGroups = function (x) {
+			if (!arguments.length) {
+				return sortGroups;
+			}
+			sortGroups = x;
+			chords = groups = null;
+			return chord;
+		};
+
+		chord.sortSubgroups = function (x) {
+			if (!arguments.length) {
+				return sortSubgroups;
+			}
+			sortSubgroups = x;
+			chords = null;
+			return chord;
+		};
+
+		chord.sortChords = function (x) {
+			if (!arguments.length) {
+				return sortChords;
+			}
+			sortChords = x;
+			if (chords) {
+				resort();
+			}
+			return chord;
+		};
+
+		chord.chords = function () {
+			if (!chords) {
+				relayout();
+			}
+			return chords;
+		};
+
+		chord.groups = function () {
+			if (!groups) {
+				relayout();
+			}
+			return groups;
+		};
+
+		// start angle for first region (decimal degrees)
+		// (stored internally in radians)
+		chord.alpha = function (x) {
+			if (!arguments.length) {
+				return alpha * degrees;
+			}
+			alpha = (x === 0) ? 0.00001 : x; // small but not zero
+			alpha *= radians;
+			alpha = alpha.mod(2*π);
+			chords = groups = null;
+			return chord;
+		};
+
+		// proper modulus (works taking the sign of the divisor not of the dividend)
+		Number.prototype.mod = function (n) {
+			return ((this % n) + n) % n;
+		};
+
+		return chord;
 	};	
 })(window.migrato || (window.migrato = {}));
 
