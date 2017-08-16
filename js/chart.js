@@ -403,7 +403,7 @@
 		};
 
 		var draw = function (year, countries) {
-			year = year || Object.keys(data.matrix)[0];
+			year = year || Object.keys(data.mapping)[0];
 			countries = countries || previous.countries;
 			previous.countries = countries;
 
