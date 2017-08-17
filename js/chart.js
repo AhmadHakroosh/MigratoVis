@@ -38,7 +38,7 @@
 		// Start angle for first region (0 - is up North)
 		config.layout.alpha = config.layout.alpha || µ;
 		// Maximum open regions at a time
-		config.maxRegionsOpen = config.maxRegionsOpen || 2;
+		config.maxRegionsOpen = config.maxRegionsOpen || 10;
 		// Data info pop-up delay
 		config.infoPopupDelay = config.infoPopupDelay || 300;
 
