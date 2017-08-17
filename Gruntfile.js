@@ -39,6 +39,7 @@ module.exports = function (grunt) {
 				},
 				src: [
 					'lib/modernizr.js',
+					'lib/bootstrap.min.js',
 					'lib/d3.min.js',
 					'js/merge.js',
 					'js/layout.js',
@@ -53,6 +54,7 @@ module.exports = function (grunt) {
 					separator: '\n'
 				},
 				src: [
+					'css/bootstrap.min.css',
 					'css/normalize.css',
 					'css/style.css'
 				],
