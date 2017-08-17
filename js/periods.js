@@ -10,33 +10,42 @@
 		config.now = config.now || years[0];
 		config.incr = config.incr || 5;
 
-		var form = d3.select(config.element).append('form');
-		var year = form.selectAll('.year').data(years);
-		var span = year.enter().append('span').classed('year', true);
+		var periods = (function () {
+			$('#periods').append('<div id="years" class="btn btn-group" data-toggle="buttons"></div>');
+			return d3.select('#years');
+		})();
 
-		span.append('input').attr({
-			name: 'year',
-			type: 'radio',
-			id: function (d) { return 'year-' + d; },
-			value: function (d) { return d; },
-			checked: function (d) { 
-				return d === config.now || null; 
-			}
-		}).on('click', function (d) {
-			var y = d;
-			year.selectAll('input').attr('checked', function (d) {
-				return y === d || null;
-			});
-			chart.draw(d);
-		});
+		var yearButtons = periods.selectAll('.year').data(years);
 
-		span.append('label')
+		var label = yearButtons.enter().append('label')
 			.attr('for', function (d) {
 				return 'year-' + d;
 			})
+			.classed('year year-button btn btn-secondary', true)
 			.text(function (d) {
 				return ""+ d + (config.incr === 1 ? "" : "-" + (d + config.incr));
 			});
+
+		label.append('input')
+			.attr({
+				name: 'year',
+				type: 'radio',
+				id: function (d) { return 'year-' + d; },
+				value: function (d) { return d; },
+				checked: function (d) { 
+					return d === config.now || null; 
+				}
+			});
+
+		$('.year-button').each(function (idx, button) {
+			$(button).on('click', function (e) {
+				var year = e.target.firstElementChild;
+				year.checked = (function (d) {
+					return year.value === d || null;
+				})();
+				chart.draw(year.value);
+			});
+		});			
 
 		// keyboard control
 		d3.select(document.body).on('keypress', function () {

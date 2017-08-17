@@ -40,6 +40,7 @@ module.exports = function (grunt) {
 				src: [
 					'lib/modernizr.js',
 					'lib/jquery.min.js',
+					'lib/popper.min.js',
 					'lib/bootstrap.min.js',
 					'lib/d3.min.js',
 					'js/merge.js',
